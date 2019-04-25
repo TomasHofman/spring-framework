@@ -130,16 +130,18 @@ configure(allprojects) { project ->
 	}
 
 	test {
-		systemProperty("java.awt.headless", "true")
-		systemProperty("testGroups", project.properties.get("testGroups"))
-		systemProperty("io.netty.leakDetection.level", "paranoid")
-		scanForTestClasses = false
-		include(["**/*Tests.class", "**/*Test.class"])
-		// Since we set scanForTestClasses to false, we need to filter out inner
-		// classes with the "$" pattern; otherwise, using -Dtest.single=MyTests to
-		// run MyTests by itself will fail if MyTests contains any inner classes.
-		exclude(["**/Abstract*.class", '**/*$*'])
-		reports.junitXml.setDestination(file("$buildDir/test-results"))
+		afterEvaluate {
+			systemProperty("java.awt.headless", "true")
+			systemProperty("testGroups", project.properties.get("testGroups"))
+			systemProperty("io.netty.leakDetection.level", "paranoid")
+			scanForTestClasses = false
+			include(["**/*Tests.class", "**/*Test.class"])
+			// Since we set scanForTestClasses to false, we need to filter out inner
+			// classes with the "$" pattern; otherwise, using -Dtest.single=MyTests to
+			// run MyTests by itself will fail if MyTests contains any inner classes.
+			exclude(["**/Abstract*.class", '**/*$*'])
+			reports.junitXml.setDestination(file("$buildDir/test-results"))
+		}
 	}
 
 	checkstyle {
